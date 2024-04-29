@@ -1,0 +1,75 @@
+import tkinter as tk
+import pyperclip
+
+def process_text(event=None):
+    input_fileName = entry_fileName.get()
+    input_DepartmentName = entry_DepartmentName.get()
+    input_date = entry_date.get()
+
+    # Replace spaces with underscores in the input text
+    input_text_with_underscore = input_fileName.replace(" ", "_")
+
+    # Text to insert
+    text_to_insert1 = input_DepartmentName + "_"
+    text_to_insert2 = "_" + input_date
+    text_underscore = input_text_with_underscore
+
+    # Insert the text into the input text with formatting
+    formatted_text = f"{text_to_insert1}{text_underscore}{text_to_insert2}"
+
+    # Output the formatted text
+    result_text.set(formatted_text)
+    copy_to_clipboard()  # Automatically copy to clipboard
+
+def copy_to_clipboard(event=None):
+    text_to_copy = result_text.get()
+    pyperclip.copy(text_to_copy)
+    copied_label.config(text="Result copied to clipboard", fg="green")
+    # Schedule the copied message to disappear after 1000 milliseconds (1 second)
+    window.after(1000, lambda: copied_label.config(text=""))
+
+# Create main window
+window = tk.Tk()
+window.title("Text Formatter")
+
+# Set window size and position
+window.geometry("600x400")
+window.resizable(False, False)
+
+# Create input fields
+label_fileName = tk.Label(window, text="Enter the text to format:", font=("Arial", 12))
+label_fileName.grid(row=0, column=0, padx=10, pady=5)
+entry_fileName = tk.Entry(window, font=("Arial", 12), width=30)
+entry_fileName.grid(row=0, column=1, padx=10, pady=5)
+entry_fileName.bind("<Return>", process_text)  # Bind <Return> key to process_text function
+
+label_DepartmentName = tk.Label(window, text="Enter Department name (e.g. IT):", font=("Arial", 12))
+label_DepartmentName.grid(row=1, column=0, padx=10, pady=5)
+entry_DepartmentName = tk.Entry(window, font=("Arial", 12), width=30)
+entry_DepartmentName.grid(row=1, column=1, padx=10, pady=5)
+entry_DepartmentName.bind("<Return>", process_text)  # Bind <Return> key to process_text function
+
+label_date = tk.Label(window, text="Enter the date (e.g. 04/24):", font=("Arial", 12))
+label_date.grid(row=2, column=0, padx=10, pady=5)
+entry_date = tk.Entry(window, font=("Arial", 12), width=30)
+entry_date.grid(row=2, column=1, padx=10, pady=5)
+entry_date.bind("<Return>", process_text)  # Bind <Return> key to process_text function
+
+# Button to process text
+process_button = tk.Button(window, text="Process Text", command=process_text, font=("Arial", 12), bg="#4CAF50", fg="white", padx=10, pady=5)
+process_button.grid(row=3, column=0, columnspan=2, padx=10, pady=10)
+
+# Create a label to display the result
+result_text = tk.StringVar()
+result_label = tk.Label(window, textvariable=result_text, font=("Arial", 12), wraplength=380)
+result_label.grid(row=4, column=0, columnspan=2, padx=10, pady=5)
+
+# Create a label to display the copied message
+copied_label = tk.Label(window, text="", font=("Arial", 10))
+copied_label.grid(row=5, column=0, columnspan=2, padx=10, pady=5)
+
+# Bind mouse click event to copy_to_clipboard function for result_label
+result_label.bind("<Button-1>", copy_to_clipboard)
+
+# Start the GUI event loop
+window.mainloop()
